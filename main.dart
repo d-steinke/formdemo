@@ -25,7 +25,6 @@ class User {
 
 enum FormOptions { optionA, optionB, optionC }
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -38,7 +37,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Form Input Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class DemoPage extends StatelessWidget {
   const DemoPage({super.key});
@@ -86,7 +85,6 @@ class DemoPage extends StatelessWidget {
   }
 }
 
-
 class MyFormWidget extends StatefulWidget {
   final Map<String, dynamic> initialValues;
 
@@ -104,7 +102,6 @@ class MyFormWidget extends StatefulWidget {
 
 class _MyFormWidgetState extends State<MyFormWidget> {
   final _formKey = GlobalKey<FormState>();
-
 
   late TextEditingController _doubleController;
   late TextEditingController _stringController;
@@ -143,7 +140,6 @@ class _MyFormWidgetState extends State<MyFormWidget> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-
       final Map<String, dynamic> formValues = {
         'doubleValue': double.tryParse(_doubleController.text),
         'stringValue': _stringController.text,
@@ -227,36 +223,33 @@ class _MyFormWidgetState extends State<MyFormWidget> {
 
           const Text('Select an Option',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          RadioListTile<FormOptions>(
-            title: const Text('Option A'),
-            value: FormOptions.optionA,
+
+          RadioGroup<FormOptions>(
             groupValue: _selectedOption,
             onChanged: (FormOptions? value) {
               setState(() {
                 _selectedOption = value;
               });
             },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<FormOptions>(
+                  title: const Text('Option A'),
+                  value: FormOptions.optionA,
+                ),
+                RadioListTile<FormOptions>(
+                  title: const Text('Option B'),
+                  value: FormOptions.optionB,
+                ),
+                RadioListTile<FormOptions>(
+                  title: const Text('Option C'),
+                  value: FormOptions.optionC,
+                ),
+              ],
+            ),
           ),
-          RadioListTile<FormOptions>(
-            title: const Text('Option B'),
-            value: FormOptions.optionB,
-            groupValue: _selectedOption,
-            onChanged: (FormOptions? value) {
-              setState(() {
-                _selectedOption = value;
-              });
-            },
-          ),
-          RadioListTile<FormOptions>(
-            title: const Text('Option C'),
-            value: FormOptions.optionC,
-            groupValue: _selectedOption,
-            onChanged: (FormOptions? value) {
-              setState(() {
-                _selectedOption = value;
-              });
-            },
-          ),
+
           const SizedBox(height: 16),
 
           const Text('Select Checkboxes',
@@ -291,13 +284,12 @@ class _MyFormWidgetState extends State<MyFormWidget> {
           const SizedBox(height: 16),
 
           DropdownButtonFormField<User>(
-            value: _selectedUser,
+            initialValue: _selectedUser,
             decoration: const InputDecoration(labelText: 'Select User'),
             items: widget.userList.map<DropdownMenuItem<User>>((User user) {
               return DropdownMenuItem<User>(
                 value: user,
-                child:
-                Text(user.fullName),
+                child: Text(user.fullName),
               );
             }).toList(),
             onChanged: (User? newValue) {
@@ -305,7 +297,8 @@ class _MyFormWidgetState extends State<MyFormWidget> {
                 _selectedUser = newValue;
               });
             },
-            validator: (value) => value == null ? 'Please select a user' : null,
+            validator: (value) =>
+            value == null ? 'Please select a user' : null,
           ),
           const SizedBox(height: 24),
 
